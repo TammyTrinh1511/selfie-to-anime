@@ -99,7 +99,7 @@ export default function App() {
             <CameraCapture onCapture={handleCapture} />
           </div>
         ) : (
-          <div className="flex flex-col md:flex-row gap-6 items-center">
+          <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
             <div className="flex flex-col items-center md:items-end-safe ">
               <p className="text-[#F05A28] font-semibold text-base md:text-lg lg:text-[38px]">
                 Ready to Wow?
