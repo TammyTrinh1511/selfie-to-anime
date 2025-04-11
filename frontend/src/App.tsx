@@ -32,31 +32,29 @@ export default function App() {
     };
   
     const handleCapture = async (imageBase64: string) => {
-      console.log("Captured image:", imageBase64); // Log the captured image for
+      console.log("Captured image:", imageBase64); 
       setCapturedImage(imageBase64);
+      setActiveTab("results");
       setLoading(true);
       try {
         // const base64Data = imageBase64.split(",")[1];
-        // const blob = base64ToBlob(base64Data, "image/jpeg");
-        
+        // const blob = base64ToBlob(base64Data, "image/jpeg");        
         // const formData = new FormData();
-        // formData.append("file", blob, "capture.jpg");
-  
+        // formData.append("file", blob, "capture.jpg");  
         // const response = await fetch("http://localhost:8000/api/upload", {
         //   method: "POST",
         //   body: formData,
         // });
         // const data = await response.json();
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-
         // setAnimeImageUrl(data.imageUrl);
         // setQrCode(data.qrCode);
-        // setActiveTab("results");
+
+        // Simulate a delay for loading
+        await new Promise((resolve) => setTimeout(resolve, 5500));
         setAnimeImageUrl("https://i.imgur.com/Ct6cXOt.png");
         setQrCode(
           "https://api.qrserver.com/v1/create-qr-code/?data=https://i.imgur.com/Ct6cXOt.png&size=150x150"
         );
-        setActiveTab("results");
       } catch (error) {
         console.error("Error uploading image:", error);
       } finally {
@@ -102,6 +100,19 @@ export default function App() {
             <CameraCapture onCapture={handleCapture} />
           </div>
         ) : (
+          <div className="relative flex flex-col md:flex-row gap-6 items-center md:items-start">
+
+          {loading && (
+            <div className="absolute inset-0 bg-black bg-opacity-70 z-10 flex flex-col items-center justify-center">
+              <div className="w-16 h-16 border-t-4 border-b-4 border-white rounded-full animate-spin"></div>
+              <p className="text-white text-lg font-semibold mt-4">
+                Generating your Anime...
+              </p>
+              <p className="text-white mt-2">
+                Please wait 15-30 seconds
+              </p>
+            </div>
+          )}
           <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
             <div className="flex flex-col items-center md:items-end-safe ">
               <p className="text-[#F05A28] font-semibold text-base md:text-lg lg:text-[38px]">
@@ -139,6 +150,7 @@ export default function App() {
                 </p>
               )}
             </div>
+          </div>
           </div>
         )}
       </div>
