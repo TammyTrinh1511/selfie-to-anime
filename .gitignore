@@ -1,0 +1,8 @@
+.qodo
+.env
+selfie-data
+debug.log
+test.ipynb
+main.py
+output
+__pycache__/
