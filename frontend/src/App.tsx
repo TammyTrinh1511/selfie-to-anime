@@ -37,31 +37,27 @@ export default function App() {
       setActiveTab("results");
       setLoading(true);
       try {
-        // const base64Data = imageBase64.split(",")[1];
-        // const blob = base64ToBlob(base64Data, "image/jpeg");        
-        // const formData = new FormData();
-        // formData.append("file", blob, "capture.jpg");  
-        // const response = await fetch("http://localhost:8000/api/upload", {
-        //   method: "POST",
-        //   body: formData,
-        // });
-        // const data = await response.json();
-        // setAnimeImageUrl(data.imageUrl);
-        // setQrCode(data.qrCode);
+        const base64Data = imageBase64.split(",")[1];
+        const blob = base64ToBlob(base64Data, "image/jpeg");        
+        const formData = new FormData();
+        formData.append("file", blob, "capture.jpg");  
+        const response = await fetch("http://localhost:8000/generate-caricature", {
+          method: "POST",
+          body: formData,
+        });
+        const imageBlob = await response.blob();
 
-        // Simulate a delay for loading
-        await new Promise((resolve) => setTimeout(resolve, 5500));
-        setAnimeImageUrl("https://i.imgur.com/Ct6cXOt.png");
-        setQrCode(
-          "https://api.qrserver.com/v1/create-qr-code/?data=https://i.imgur.com/Ct6cXOt.png&size=150x150"
-        );
+        // Tạo URL từ blob và cập nhật state để hiển thị ảnh:
+        const imageUrl = URL.createObjectURL(imageBlob);
+        setAnimeImageUrl(imageUrl);
+
       } catch (error) {
         console.error("Error uploading image:", error);
       } finally {
         setLoading(false);
       }
     };
-  
+ 
 
   return (
     <div
