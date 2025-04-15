@@ -5,9 +5,8 @@ import { useMediaQuery } from "react-responsive";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<"camera" | "results">("camera");
-  const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [_, setCapturedImage] = useState<string | null>(null);
   const [animeImageUrl, setAnimeImageUrl] = useState<string | null>(null);
-  const [qrCode, setQrCode] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
 
@@ -118,8 +117,8 @@ export default function App() {
                 Download Your Anime Edition!
               </p>
               <div className="bg-white border border-gray-300 rounded-md w-[120px] h-[150px] md:w-[360px] md:h-[360px] flex items-center justify-center">
-                {qrCode ? (
-                   <QRCodeSVG value='https://reactjs.org/' size={isMobile ? 120 : 360} />
+                {animeImageUrl ? (
+                  <QRCodeSVG value={animeImageUrl} size={isMobile ? 120 : 360} />
                 ) : loading ? (
                   <p className="text-xs text-gray-400 animate-pulse">
                     Generating...
