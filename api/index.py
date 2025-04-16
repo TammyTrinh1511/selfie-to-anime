@@ -56,8 +56,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+output_dir = "/tmp/output"
 # Create output directory if it doesn't exist
-os.makedirs("./output", exist_ok=True)
+os.makedirs("output_dir", exist_ok=True)
 
 # Check for logo file
 logo_path = "data/logo-lts.png"
@@ -388,7 +389,7 @@ async def caricature_pipeline(
 
         # Create a unique output filename
         timestamp = int(time.time())
-        output_filename = f"output/caricature_{timestamp}.jpg"
+        output_filename = f"{output_dir}/caricature_{timestamp}.jpg"
         logger.debug(f"Output filename: {output_filename}")
 
         # Download and add logo
