@@ -349,7 +349,7 @@ async def caricature_pipeline(
     logger.info(f"Caricature request received for file: {file.filename}")
 
     # Save uploaded file temporarily
-    temp_file_path = f"temp_{file.filename}"
+    temp_file_path = f"/tmp/temp_{file.filename}"
     logger.debug(f"Saving uploaded file to {temp_file_path}")
 
     try:
