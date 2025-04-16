@@ -352,9 +352,17 @@ async def caricature_pipeline(
     temp_file_path = f"temp_{file.filename}"
     logger.debug(f"Saving uploaded file to {temp_file_path}")
 
-    with open(temp_file_path, "wb") as buffer:
-        buffer.write(await file.read())
-        logger.debug("✅ File written successfully!") 
+    try:
+        logger.debug("🔸 Đọc file từ UploadFile...")
+        content = await file.read()
+        logger.debug(f"📦 Đã đọc được {len(content)} bytes")
+
+        with open(temp_file_path, "wb") as buffer:
+            buffer.write(content)
+            logger.debug("✅ File written successfully!") 
+    except Exception as e:
+        logger.error(f"❌ Lỗi khi lưu file tạm: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Không thể ghi file tạm.")
 
     try:
         # Predict gender
