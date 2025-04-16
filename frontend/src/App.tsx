@@ -40,7 +40,7 @@ export default function App() {
         const blob = base64ToBlob(base64Data, "image/jpeg");        
         const formData = new FormData();
         formData.append("file", blob, "capture.jpg");  
-        const response = await fetch("http://localhost:8000/generate-caricature", {
+        const response = await fetch("/api/generate-caricature", {
           method: "POST",
           body: formData,
         });
