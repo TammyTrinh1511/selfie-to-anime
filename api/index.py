@@ -354,6 +354,7 @@ async def caricature_pipeline(
 
     with open(temp_file_path, "wb") as buffer:
         buffer.write(await file.read())
+        logger.debug("✅ File written successfully!") 
 
     try:
         # Predict gender
