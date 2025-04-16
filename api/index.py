@@ -58,7 +58,7 @@ app.add_middleware(
 
 output_dir = "/tmp/output"
 # Create output directory if it doesn't exist
-os.makedirs("output_dir", exist_ok=True)
+os.makedirs(output_dir, exist_ok=True)
 
 # Check for logo file
 logo_path = "data/logo-lts.png"
