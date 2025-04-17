@@ -28,10 +28,14 @@ const DownloadPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6">
-      <h1 className="text-2xl font-bold mb-4">Please complete the form to download your Anime</h1>
-      <div id="hubspotForm" />
+    <div className="min-h-screen flex items-center justify-center bg-white">
+    <div className="w-full max-w-[1200px] p-4 sm:p-6 md:p-8">
+      <h1 className="text-xl sm:text-xl md:text-3xl font-bold mb-6 text-center">
+        Please complete the form to download your Anime
+      </h1>
+      <div id="hubspotForm" className="w-full" />
     </div>
+  </div>
   );
 };
 
