@@ -248,7 +248,7 @@ def get_output_url(orderID):
 
         for attempt in range(max_retries):
             logger.debug(f"Checking order status, attempt {attempt+1}/{max_retries}")
-            time.sleep(1)
+            time.sleep(0.5)
             response = requests.post(url, headers=headers, data=json.dumps(payload))
             logger.debug(f"Order status response: {response.status_code}")
 
