@@ -3,10 +3,13 @@ import CameraCapture from "./components/CameraCapture";
 import { QRCodeSVG } from "qrcode.react";
 import { useMediaQuery } from "react-responsive";
 
+const DOWNLOAD_BASE =
+  import.meta.env.VITE_DOWNLOAD_BASE_URL || window.location.origin;
+const DOWNLOAD_PATH = import.meta.env.VITE_DOWNLOAD_PATH || "/download";
 export default function App() {
   const [activeTab, setActiveTab] = useState<"camera" | "results">("camera");
   const [_, setCapturedImage] = useState<string | null>(null);
-  const [animeImageUrl, setAnimeImageUrl] = useState<string | null>(null);
+  const [animeImageUrl, setAnimeImageUrl] = useState<string | null>('s');
   const [loading, setLoading] = useState<boolean>(false);
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
 
@@ -57,6 +60,11 @@ export default function App() {
       }
     };
  
+    const downloadUrl =
+    animeImageUrl &&
+    `${DOWNLOAD_BASE}${DOWNLOAD_PATH}?image=${encodeURIComponent(
+      animeImageUrl
+    )}` || "";
 
   return (
     <div
@@ -118,7 +126,7 @@ export default function App() {
               </p>
               <div className="bg-white border border-gray-300 rounded-md w-[120px] h-[150px] md:w-[360px] md:h-[360px] flex items-center justify-center">
                 {animeImageUrl ? (
-                  <QRCodeSVG value={animeImageUrl} size={isMobile ? 120 : 360} />
+                  <QRCodeSVG value={downloadUrl} size={isMobile ? 120 : 360} />
                 ) : loading ? (
                   <p className="text-xs text-gray-400 animate-pulse">
                     Generating...
