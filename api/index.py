@@ -336,7 +336,7 @@ def download_and_add_logo(image_url, logo_path, output_path, position="top-left"
         logger.error(f"Error in download_and_add_logo: {str(e)}", exc_info=True)
         raise
 
-@app.post("/api/generate-caricature/")
+@app.post("/api/generate-caricature")
 async def caricature_pipeline(
     file: UploadFile = File(...),
     logo_position: str = "bottom-right",
