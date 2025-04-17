@@ -14,10 +14,10 @@ const DownloadPage = () => {
         target: '#hubspotForm',
         onFormSubmitted: () => {
           // Khi submit form → tự động tải ảnh
-          const animeUrl = new URLSearchParams(window.location.search).get('image');
-          if (animeUrl) {
+          const base64Image = localStorage.getItem('anime_image');
+          if (base64Image) {
             const link = document.createElement('a');
-            link.href = animeUrl;
+            link.href = base64Image;
             link.download = 'anime.jpg';
             link.click();
           }

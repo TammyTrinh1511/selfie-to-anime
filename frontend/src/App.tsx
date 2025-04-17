@@ -52,7 +52,12 @@ export default function App() {
         // Tạo URL từ blob và cập nhật state để hiển thị ảnh:
         const imageUrl = URL.createObjectURL(imageBlob);
         setAnimeImageUrl(imageUrl);
-
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64data = reader.result as string;
+          localStorage.setItem("anime_image", base64data);
+        };
+        reader.readAsDataURL(imageBlob);
       } catch (error) {
         console.error("Error uploading image:", error);
       } finally {
