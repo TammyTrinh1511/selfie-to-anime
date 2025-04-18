@@ -37,15 +37,17 @@ const DownloadPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-white">
     <div className="w-full max-w-[1200px] p-4 sm:p-6 md:p-8">
       <h1 className="text-xl sm:text-xl md:text-3xl font-bold mb-6 text-center">
-        Please complete the form to download your Anime
+          {canDownload
+            ? ''
+            : 'Please complete the form to download your Anime'}
       </h1>
       <div id="hubspotForm" className="w-full" />
       {canDownload && (
         <button
           onClick={handleDownload}
-          className="mt-6 px-6 py-3 bg-[#1A3360] hover:bg-[#024DA1] text-white font-semibold rounded-md"
-        >
-          Download Anime
+          className="mt-6 px-6 py-3 bg-[#FF7A59] hover:bg-[#e85e3f] text-white font-semibold rounded-[15px] leading-[14px]
+          min-w-[220px] max-w-[300px] mx-auto text-center block">
+          Download Your Anime Picture
         </button>
       )}
     </div>
