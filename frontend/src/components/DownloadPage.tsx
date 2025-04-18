@@ -1,6 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const DownloadPage = () => {
+  const [canDownload, setCanDownload] = useState(false);
+
   useEffect(() => {
     const script = document.createElement('script');
     script.src = '//js.hsforms.net/forms/embed/v2.js';
@@ -14,18 +16,22 @@ const DownloadPage = () => {
         target: '#hubspotForm',
         onFormSubmitted: () => {
           // Khi submit form → tự động tải ảnh
-          const base64Image = localStorage.getItem('anime_image');
-          if (base64Image) {
-            const link = document.createElement('a');
-            link.href = base64Image;
-            link.download = 'anime.jpg';
-            link.click();
-          }
+          setCanDownload(true);
         }
       });
     };
     document.body.appendChild(script);
   }, []);
+
+  const handleDownload = () => {
+    const base64Image = localStorage.getItem("anime_image");
+    if (base64Image) {
+      const link = document.createElement("a");
+      link.href = base64Image;
+      link.download = "anime.jpg";
+      link.click();
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
@@ -34,6 +40,14 @@ const DownloadPage = () => {
         Please complete the form to download your Anime
       </h1>
       <div id="hubspotForm" className="w-full" />
+      {canDownload && (
+        <button
+          onClick={handleDownload}
+          className="mt-6 px-6 py-3 bg-[#1A3360] hover:bg-[#024DA1] text-white font-semibold rounded-md"
+        >
+          Download Anime
+        </button>
+      )}
     </div>
   </div>
   );
