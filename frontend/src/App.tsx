@@ -6,6 +6,8 @@ import { useMediaQuery } from "react-responsive";
 const DOWNLOAD_BASE =
   import.meta.env.VITE_DOWNLOAD_BASE_URL || window.location.origin;
 const DOWNLOAD_PATH = import.meta.env.VITE_DOWNLOAD_PATH || "/download";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 export default function App() {
   const [activeTab, setActiveTab] = useState<"camera" | "results">("camera");
   const [_, setCapturedImage] = useState<string | null>(null);
@@ -43,21 +45,17 @@ export default function App() {
         const blob = base64ToBlob(base64Data, "image/jpeg");        
         const formData = new FormData();
         formData.append("file", blob, "capture.jpg");  
-        const response = await fetch("/api/generate-caricature", {
+        const response = await fetch(`${API_BASE_URL}/api/generate-caricature`, {
           method: "POST",
           body: formData,
         });
-        const imageBlob = await response.blob();
 
         // Tạo URL từ blob và cập nhật state để hiển thị ảnh:
-        const imageUrl = URL.createObjectURL(imageBlob);
-        setAnimeImageUrl(imageUrl);
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const base64data = reader.result as string;
-          localStorage.setItem("anime_image", base64data);
-        };
-        reader.readAsDataURL(imageBlob);
+        const data = await response.json(); 
+        const imageUrl = data.image_url;   
+        setAnimeImageUrl(imageUrl);        
+        localStorage.setItem("download_url", imageUrl);         
+
       } catch (error) {
         console.error("Error uploading image:", error);
       } finally {

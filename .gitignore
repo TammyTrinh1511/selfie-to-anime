@@ -6,3 +6,28 @@ test.ipynb
 main.py
 output
 __pycache__/
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# FastAPI / backend
+.env
+*.sqlite3
+
+# Node.js / React
+node_modules/
+dist/
+build/
+.vite/
+.env.local
+package-lock.json
+
+# System
+.DS_Store
+*.log
+
+api/static/images/
