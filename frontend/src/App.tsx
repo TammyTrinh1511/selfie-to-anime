@@ -6,7 +6,6 @@ import { useMediaQuery } from "react-responsive";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export default function App() {
   const [activeTab, setActiveTab] = useState<"camera" | "results">("camera");
-  const [_, setCapturedImage] = useState<string | null>(null);
   const [animeImageUrl, setAnimeImageUrl] = useState<string | null>("");
   const [loading, setLoading] = useState<boolean>(false);
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
@@ -33,8 +32,6 @@ export default function App() {
   };
 
   const handleCapture = async (imageBase64: string) => {
-    console.log("Captured image:", imageBase64);
-    setCapturedImage(imageBase64);
     setActiveTab("results");
     setLoading(true);
     try {
@@ -46,6 +43,11 @@ export default function App() {
         method: "POST",
         body: formData,
       });
+      if (!response.ok) {
+        const errText = await response.text();
+        console.error("❌ Backend returned error:", errText);
+        throw new Error(`Server error: ${response.status}`);
+      }
       const data = await response.json(); 
         const imageUrl = data.image_url;   
         setAnimeImageUrl(imageUrl);        
@@ -114,6 +116,7 @@ export default function App() {
             )}
 
             {errorMessage ? (
+              <div className="w-full flex justify-center">      
               <div className="text-center space-y-4">
                 <p className="text-red-500 text-sm font-medium">
                   {errorMessage}
@@ -124,6 +127,7 @@ export default function App() {
                 >
                   Try Again
                 </button>
+              </div>
               </div>
             ) : (
               <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">

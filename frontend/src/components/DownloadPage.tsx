@@ -24,7 +24,7 @@ const DownloadPage = () => {
   }, []);
 
   const handleDownload = () => {
-    const imageUrl = localStorage.getItem('download_url'); // 👈 key chứa link ảnh từ JSON response
+    const imageUrl = localStorage.getItem('download_url'); 
     if (!imageUrl) return;
 
     const parts = imageUrl.split('/');
