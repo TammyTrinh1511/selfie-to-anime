@@ -1,8 +1,14 @@
-# frontend/Dockerfile
 FROM node:18-alpine AS build
 WORKDIR /app
+
+COPY package.json package-lock.json* ./
+
+COPY .env ./
+
+RUN npm install
+
 COPY . .
-RUN npm install && npm run build
+RUN npm run build
 
 FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
