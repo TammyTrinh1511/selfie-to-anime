@@ -7,8 +7,9 @@ from io import BytesIO
 from typing import Optional
 from PIL import Image
 import google.generativeai as genai
-from fastapi import FastAPI, File, UploadFile, HTTPException
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, File, UploadFile, HTTPException, Query
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
@@ -29,6 +30,7 @@ load_dotenv()
 # Initialize API keys
 API_KEY = os.getenv("API_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")
 
 # Check for API keys
 if not API_KEY:
@@ -56,7 +58,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-output_dir = "/tmp/output"
+app.mount("/static", StaticFiles(directory="static"), name="static")
+output_dir = "static/images"
 # Create output directory if it doesn't exist
 os.makedirs(output_dir, exist_ok=True)
 
@@ -419,10 +422,11 @@ async def caricature_pipeline(
             padding=logo_padding
         )
         logger.debug(f"Logo added, output saved to {output_path}")
-
+        public_url = f"{BASE_URL}/{output_filename}"  
         # Return the processed image
         logger.debug("Returning file response...")
-        return FileResponse(output_path, media_type="image/jpeg", filename=f"caricature_{timestamp}.jpg")
+        return JSONResponse(status_code=200, content={"image_url": public_url})
+
 
     except Exception as e:
         logger.error(f"Error in caricature pipeline: {str(e)}", exc_info=True)
@@ -433,7 +437,19 @@ async def caricature_pipeline(
         if os.path.exists(temp_file_path):
             logger.debug(f"Cleaning up temporary file {temp_file_path}")
             os.remove(temp_file_path)
+            
+@app.get("/api/download-caricature")
+def download_image(file: str = Query(...)):
+    path = f"static/images/{file}"
+    if not os.path.exists(path):
+        raise HTTPException(status_code=404, detail="File not found")
 
+    return FileResponse(
+        path,
+        media_type="image/jpeg",
+        filename=file,
+        headers={"Content-Disposition": f"attachment; filename={file}"}
+    )
 if __name__ == "__main__":
     uvicorn.run("index:app", host="0.0.0.0", port=8000, log_level="info")
 
