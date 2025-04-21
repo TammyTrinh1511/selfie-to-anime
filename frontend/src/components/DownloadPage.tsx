@@ -24,12 +24,29 @@ const DownloadPage = () => {
   }, []);
 
   const handleDownload = () => {
-    const base64Image = localStorage.getItem("anime_image");
-    if (base64Image) {
-      const link = document.createElement("a");
-      link.href = base64Image;
-      link.download = "anime.jpg";
-      link.click();
+    const imageUrl = localStorage.getItem('download_url'); 
+    if (!imageUrl) return;
+
+    const parts = imageUrl.split('/');
+    const name = parts[parts.length - 1];
+    if (!name) {
+      console.warn("⚠️ fileName is null!");
+      return;
+    }
+
+    const isiOS = /iP(ad|hone)/.test(navigator.userAgent);
+    const url = `${import.meta.env.VITE_API_BASE_URL}/api/download-caricature?file=${encodeURIComponent(name)}`;
+
+    if (isiOS) {
+      window.open(url, '_blank'); // iOS không hỗ trợ a.download
+    } else {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = '';
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     }
   };
 

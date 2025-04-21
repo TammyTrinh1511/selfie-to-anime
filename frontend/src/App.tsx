@@ -3,9 +3,9 @@ import CameraCapture from "./components/CameraCapture";
 import { QRCodeSVG } from "qrcode.react";
 import { useMediaQuery } from "react-responsive";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export default function App() {
   const [activeTab, setActiveTab] = useState<"camera" | "results">("camera");
-  const [_, setCapturedImage] = useState<string | null>(null);
   const [animeImageUrl, setAnimeImageUrl] = useState<string | null>("");
   const [loading, setLoading] = useState<boolean>(false);
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
@@ -32,8 +32,6 @@ export default function App() {
   };
 
   const handleCapture = async (imageBase64: string) => {
-    console.log("Captured image:", imageBase64);
-    setCapturedImage(imageBase64);
     setActiveTab("results");
     setLoading(true);
     try {
@@ -41,21 +39,19 @@ export default function App() {
       const blob = base64ToBlob(base64Data, "image/jpeg");
       const formData = new FormData();
       formData.append("file", blob, "capture.jpg");
-      const response = await fetch("/api/generate-caricature", {
+      const response = await fetch(`${API_BASE_URL}/api/generate-caricature`, {
         method: "POST",
         body: formData,
       });
-      const imageBlob = await response.blob();
-
-      // Tạo URL từ blob và cập nhật state để hiển thị ảnh:
-      const imageUrl = URL.createObjectURL(imageBlob);
-      setAnimeImageUrl(imageUrl);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64data = reader.result as string;
-        localStorage.setItem("anime_image", base64data);
-      };
-      reader.readAsDataURL(imageBlob);
+      if (!response.ok) {
+        const errText = await response.text();
+        console.error("❌ Backend returned error:", errText);
+        throw new Error(`Server error: ${response.status}`);
+      }
+      const data = await response.json(); 
+        const imageUrl = data.image_url;   
+        setAnimeImageUrl(imageUrl);        
+        localStorage.setItem("download_url", imageUrl);   
     } catch (error) {
       console.error("Error uploading image:", error);
       setErrorMessage("Oops! Something went wrong. Please try again.");
@@ -120,6 +116,7 @@ export default function App() {
             )}
 
             {errorMessage ? (
+              <div className="w-full flex justify-center">      
               <div className="text-center space-y-4">
                 <p className="text-red-500 text-sm font-medium">
                   {errorMessage}
@@ -130,6 +127,7 @@ export default function App() {
                 >
                   Try Again
                 </button>
+              </div>
               </div>
             ) : (
               <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
