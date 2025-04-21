@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 
 const DownloadPage = () => {
   const [canDownload, setCanDownload] = useState(false);
-
+  const searchParams = new URLSearchParams(location.search);
+  const imageUrl = searchParams.get('image_url');
   useEffect(() => {
     const script = document.createElement('script');
     script.src = '//js.hsforms.net/forms/embed/v2.js';
@@ -23,33 +24,52 @@ const DownloadPage = () => {
     document.body.appendChild(script);
   }, []);
 
-  const handleDownload = () => {
-    const imageUrl = localStorage.getItem('download_url'); 
+  // const handleDownload = () => {
+  //   const imageUrl = localStorage.getItem('download_url'); 
+  //   if (!imageUrl) return;
+
+  //   const parts = imageUrl.split('/');
+  //   const name = parts[parts.length - 1];
+  //   if (!name) {
+  //     console.warn("⚠️ fileName is null!");
+  //     return;
+  //   }
+
+  //   const isiOS = /iP(ad|hone)/.test(navigator.userAgent);
+  //   const url = `${import.meta.env.VITE_API_BASE_URL}/api/download-caricature?file=${encodeURIComponent(name)}`;
+
+  //   if (isiOS) {
+  //     window.open(url, '_blank'); // iOS không hỗ trợ a.download
+  //   } else {
+  //     const a = document.createElement('a');
+  //     a.href = url;
+  //     a.download = '';
+  //     a.style.display = 'none';
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     document.body.removeChild(a);
+  //   }
+  // };
+
+  const handleDownload = async () => {
     if (!imageUrl) return;
-
-    const parts = imageUrl.split('/');
-    const name = parts[parts.length - 1];
-    if (!name) {
-      console.warn("⚠️ fileName is null!");
-      return;
-    }
-
-    const isiOS = /iP(ad|hone)/.test(navigator.userAgent);
-    const url = `${import.meta.env.VITE_API_BASE_URL}/api/download-caricature?file=${encodeURIComponent(name)}`;
-
-    if (isiOS) {
-      window.open(url, '_blank'); // iOS không hỗ trợ a.download
-    } else {
+    try {
+      const res = await fetch(imageUrl, { credentials: 'include' });
+      if (!res.ok) throw new Error(`Status ${res.status}`);
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
-      a.download = '';
-      a.style.display = 'none';
+      a.href = blobUrl;
+      a.download = imageUrl.split('/').pop() || 'anime.jpg';
       document.body.appendChild(a);
       a.click();
-      document.body.removeChild(a);
+      a.remove();
+      URL.revokeObjectURL(blobUrl);
+    } catch {
+      window.open(imageUrl, '_blank');
     }
   };
-
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
     <div className="w-full max-w-[1200px] p-4 sm:p-6 md:p-8">

@@ -141,7 +141,7 @@ export default function App() {
                   <div className="bg-white border border-gray-300 rounded-md w-[120px] h-[150px] md:w-[360px] md:h-[360px] flex items-center justify-center">
                     {animeImageUrl ? (
                       <QRCodeSVG
-                        value={`${window.location.origin}/download`}
+                        value={`${window.location.origin}/download?image_url=${encodeURIComponent(animeImageUrl)}`}
                         size={isMobile ? 120 : 360}
                       />
                     ) : loading ? (
